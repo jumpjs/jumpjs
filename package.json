@@ -1,0 +1,19 @@
+{
+  "name": "jumpjs",
+  "version": "1.1.0",
+  "description": "Javascript game library",
+  "main": "./src",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jumpjs/jumpjs.git"
+  },
+  "author": "Andrew Bliss",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jumpjs/jumpjs/issues"
+  },
+  "homepage": "https://github.com/jumpjs/jumpjs#readme"
+}
