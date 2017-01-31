@@ -1,7 +1,7 @@
 {
   "name": "jumpjs",
-  "version": "1.1.0",
-  "description": "Javascript game library",
+  "version": "1.1.1",
+  "description": "HTML5 Canvas Javascript game library",
   "main": "./src",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
