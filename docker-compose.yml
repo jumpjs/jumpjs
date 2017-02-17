@@ -9,9 +9,9 @@ services:
       - ./examples/express/routes:/usr/src/app/express/routes
       - ./examples/express/middleware:/usr/src/app/express/middleware
       - ./dist:/usr/src/app/express/public/js/jumpjs
+      - ./examples/js/examples/jumpjoe/dist:/usr/src/app/express/public/js/jumpjoe
       - ./examples/css/dist:/usr/src/app/express/public/css
       - ./examples/img:/usr/src/app/express/public/img
-      - ./examples/express/public/js/examples:/usr/src/app/express/public/js/examples
     environment:
       - NODE_ENV=development
       - PORT=3000
@@ -21,7 +21,13 @@ services:
     volumes:
       - ./src:/webpack/src
       - ./dist:/webpack/dist
-    command: ['webpack', '--config', '/webpack/src/webpack.config.js']
+    command: ['webpack', '--config', '/webpack/src/webpack.config.js', '--optimize-minimize']
+  webpack-example-compiler:
+    image: andrewgbliss/webpack
+    volumes:
+      - ./examples/js/examples/jumpjoe/src:/webpack/src
+      - ./examples/js/examples/jumpjoe/dist:/webpack/dist
+    command: ['webpack', '--config', '/webpack/src/webpack.config.js', '--optimize-minimize']
   sass-compiler:
     image: andrewgbliss/sass
     volumes:

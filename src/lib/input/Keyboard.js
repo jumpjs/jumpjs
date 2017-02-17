@@ -1,30 +1,15 @@
-var keys = new Array();
-
-function bindKey(k){
-	return new Key(k);
-}
+var keys = [];
 
 module.exports = {
-  bindKey
+  bindKey(k){
+    return new Key(k);
+	},
+  unbindKey(k) {
+    keys[k] = null;
+  }
 };
 
 function Key(k){
-
-  document.addEventListener('keyup', function () {
-    var keyCode = window.event.keyCode;
-    if (keys[keyCode]) {
-  		keys[keyCode].pressed = false;
-  	}
-  });
-  document.addEventListener('keydown', function () {
-    var keyCode = window.event.keyCode;
-    if (keys[keyCode]) {
-      if (!keys[keyCode].pressed && keys[keyCode].event) {
-    		keys[keyCode].event();
-    	}
-  		keys[keyCode].pressed = true;
-  	}
-  });
 
 	if (k.length > 1) {
 		var c = 0;
@@ -48,3 +33,19 @@ function Key(k){
 
 	return this;
 }
+
+document.addEventListener('keyup', function () {
+	var keyCode = window.event.keyCode;
+	if (keys[keyCode]) {
+		keys[keyCode].pressed = false;
+	}
+});
+document.addEventListener('keydown', function () {
+	var keyCode = window.event.keyCode;
+	if (keys[keyCode]) {
+		if (!keys[keyCode].pressed && keys[keyCode].event) {
+			keys[keyCode].event();
+		}
+		keys[keyCode].pressed = true;
+	}
+});

@@ -1,3 +1,4 @@
+var Game = require('../core/Game');
 var Component = require('../components/Component');
 
 function Sprite(img, x, y, width, height) {
@@ -17,12 +18,12 @@ Sprite.prototype.setImg = function (img) {
   this.img = img;
 }
 
-var onUpdate = function (_game, _entity) {
+var onUpdate = function (_entity) {
   if (!this.img) {
     return;
   }
   var transform = _entity.components['transform'];
-  var ctx = _game.getContext();
+  var ctx = Game.getContext();
   ctx.drawImage(this.img,
     this.x,
     this.y,

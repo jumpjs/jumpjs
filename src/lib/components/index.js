@@ -1,9 +1,13 @@
 var Component = require('./Component');
 var Transform = require('./Transform');
-var Collision = require('./Collision');
+var BoxCollider2D = require('./BoxCollider2D');
+var Rect = require('./Rect');
+var Text = require('./Text');
 
 module.exports = {
   Component,
   Transform,
-  Collision
+  BoxCollider2D,
+  Rect,
+  Text
 };

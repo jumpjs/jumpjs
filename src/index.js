@@ -1,5 +1,3 @@
-require('./setup');
-
 var jumpjs = require('./lib');
 
 if (window) {

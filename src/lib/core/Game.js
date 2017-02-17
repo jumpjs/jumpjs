@@ -2,39 +2,77 @@ var FPS = 60;
 var FRAME_DURATION = 1000 / FPS;
 var fps = 0;
 var frames = 0;
-var scene = null;
+var scenes = {};
+var currentScene = null;
 var previousTime = null;
 var delta = null;
 var canvas = null;
 var context = null;
-var paused = true;
 var elapsed = 0;
 
 var Game = {
+  paused: false,
   getCanvas() {
     return canvas;
   },
   setCanvas(_canvas) {
     canvas = _canvas;
     context = canvas.getContext('2d');
+    canvas.addEventListener('click', function(event) {
+      var x = event.pageX - canvas.offsetLeft;
+      var y = event.pageY - canvas.offsetTop;
+      currentScene.onClick(x, y, event);
+    }, false);
   },
   getContext() {
     return context;
   },
-  getScene() {
-    return scene;
+  addScene(name, scene) {
+    scenes[name] = scene;
   },
-  setScene(_scene) {
-    if (_scene.onSetup) {
-      _scene.onSetup();
+  getCurrentScene() {
+    return currentScene;
+  },
+  setCurrentScene(name) {
+    currentScene = scenes[name];
+    Game.resetCurrentScene();
+  },
+  resetCurrentScene() {
+    if (currentScene) {
+      currentScene.reset();
     }
-    scene = _scene;
   },
   getDelta() {
     return delta;
   },
   getFPS() {
     return Math.round(1 / elapsed);
+  },
+  isMobile: {
+    Android() {
+      return navigator.userAgent.match(/Android/i);
+    },
+    BlackBerry() {
+      return navigator.userAgent.match(/BlackBerry/i);
+    },
+    iOS() {
+      return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+    },
+    Opera() {
+      return navigator.userAgent.match(/Opera Mini/i);
+    },
+    Windows() {
+      return navigator.userAgent.match(/IEMobile/i) || navigator.userAgent.match(/WPDesktop/i);
+    },
+    any() {
+      return (
+        Game.isMobile.Android() ||
+        Game.isMobile.BlackBerry() ||
+        Game.isMobile.iOS() ||
+        Game.isMobile.Opera() ||
+        Game.isMobile.Windows()
+      );
+    }
   },
   run() {
     _gameLoop();
@@ -70,7 +108,9 @@ function _gameLoop() {
   context.restore();
 
   //Update all of the game components
-  scene.update(Game);
+  if (currentScene) {
+    currentScene.update();
+  }
 
   //set the current time to be used as the previous
   //for the next frame

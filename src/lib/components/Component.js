@@ -2,9 +2,9 @@ function Component() {
   this.onUpdate = null;
 }
 
-Component.prototype.update = function(game, entity) {
+Component.prototype.update = function(entity) {
   if (this.onUpdate) {
-    this.onUpdate(game, entity);
+    this.onUpdate(entity);
   }
 }
 
