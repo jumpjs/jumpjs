@@ -1,25 +1,22 @@
 var Game = require('../core/Game');
 var Component = require('../components/Component');
 
-function Rect(color) {
-  Component.call(this);
+function Rect(x, y, w, h, color, fill) {
+  Component.call(this, x, y, w, h);
   this.color = color || 'black';
-  this.onUpdate = onUpdate;
-  this.fill = true;
+  this.fill = fill || true;
 }
 
 Rect.prototype = Object.create(Component.prototype);
 Rect.prototype.constructor = Rect;
 
-var onUpdate = function (_entity) {
-  var transform = _entity.transform;
-  var ctx = Game.getContext();
+Rect.prototype.render = function(ctx, scene) {
   if (this.fill) {
     ctx.fillStyle = this.color;
-    ctx.fillRect(transform.x, transform.y, transform.width, transform.height);
+    ctx.fillRect(scene.x + this.x, scene.y + this.y, this.width, this.height);
   } else {
-    ctx.strokeRect(transform.x, transform.y, transform.width, transform.height);
+    ctx.strokeRect(scene.x + this.x, scene.y + this.y, this.width, this.height);
   }
-};
+}
 
 module.exports = Rect;

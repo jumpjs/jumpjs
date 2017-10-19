@@ -10,8 +10,10 @@ services:
       - ./examples/express/middleware:/usr/src/app/express/middleware
       - ./dist:/usr/src/app/express/public/js/jumpjs
       - ./examples/js/examples/jumpjoe/dist:/usr/src/app/express/public/js/jumpjoe
+      - ./examples/js/examples/tapcircle/dist:/usr/src/app/express/public/js/tapcircle
       - ./examples/css/dist:/usr/src/app/express/public/css
       - ./examples/img:/usr/src/app/express/public/img
+      - ./examples/utils:/usr/src/app/express/public/utils
     environment:
       - NODE_ENV=development
       - PORT=3000
@@ -22,11 +24,17 @@ services:
       - ./src:/webpack/src
       - ./dist:/webpack/dist
     command: ['webpack', '--config', '/webpack/src/webpack.config.js', '--optimize-minimize']
-  webpack-example-compiler:
+  webpack-jumpjoe-compiler:
     image: andrewgbliss/webpack
     volumes:
       - ./examples/js/examples/jumpjoe/src:/webpack/src
       - ./examples/js/examples/jumpjoe/dist:/webpack/dist
+    command: ['webpack', '--config', '/webpack/src/webpack.config.js', '--optimize-minimize']
+  webpack-tapcircle-compiler:
+    image: andrewgbliss/webpack
+    volumes:
+      - ./examples/js/examples/tapcircle/src:/webpack/src
+      - ./examples/js/examples/tapcircle/dist:/webpack/dist
     command: ['webpack', '--config', '/webpack/src/webpack.config.js', '--optimize-minimize']
   sass-compiler:
     image: andrewgbliss/sass

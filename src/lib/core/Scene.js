@@ -1,74 +1,79 @@
-function Scene() {
-  this.locals = {};
-  this.entities = [];
-  this.onSetup = null;
+var utils = require('../utils');
+var EventEmitter = require('events').EventEmitter;
+
+function Scene(x, y, w, h, backgroundColor) {
+  var self = this;
+  self.x = x || 0;
+  self.y = y || 0;
+  self.width = w || window.innerWidth;
+  self.height = h || window.innerHeight;
+  self.backgroundColor = backgroundColor || 'white';
+  self.locals = {};
+  self.components = [];
+  ['click', 'touchstart', 'touchend', 'touchmove', 'touchcancel'].forEach(function(name) {
+    self.on(name, function(x, y, event) {
+      for (var i = 0; i < self.components.length; i++) {
+        var component = self.components[i];
+        if (component.radius) {
+          if (utils.math.pointInCircle(x, y, component.x, component.y, component.radius)) {
+            component.emit(name, component);
+          }
+        } else {
+          if (utils.math.pointInBox(x, y, component.x, component.y, component.width, component.height)) {
+            component.emit(name, component);
+          }
+        }
+      }
+    }, false);
+  });
 }
 
-Scene.prototype.onClick = function(x, y, event) {
-  for (var i = 0; i < this.entities.length; i++) {
-    var entity = this.entities[i];
-    if (y > entity.transform.y &&
-        y < entity.transform.y + entity.transform.height &&
-        x > entity.transform.x &&
-        x < entity.transform.x + entity.transform.width) {
-      entity.emit('click', entity);
-    }
-  }
-}
+Scene.prototype = Object.create(EventEmitter.prototype);
+Scene.prototype.constructor = Scene;
 
 Scene.prototype.reset = function() {
-  this.entities = [];
+  this.components = [];
   if (this.onSetup) {
     this.onSetup();
   }
 }
 
-Scene.prototype.addEntity = function(entity, timeout) {
+Scene.prototype.addComponent = function(component, timeout) {
   if (timeout) {
     var self = this;
     setTimeout(function() {
-      self.entities.push(entity);
+      self.components.push(component);
     }, timeout);
   } else {
-    this.entities.push(entity);
+    this.components.push(component);
   }
 }
 
-Scene.prototype.update = function() {
-  for (var i = 0; i < this.entities.length; i++) {
-    if (this.entities[i] && this.entities[i].update) {
-      this.entities[i].update();
+Scene.prototype.update = function(context, scene, game) {
+  context.fillStyle = this.backgroundColor;
+  context.fillRect(this.x, this.y, this.width, this.height);
+  for (var i = 0; i < this.components.length; i++) {
+    if (this.components[i] && this.components[i].update) {
+      this.components[i].update(context, scene, game);
     }
   }
 }
 
-Scene.prototype.findEntityById = function(id) {
-  for (var i = 0; i < this.entities.length; i++) {
-    if (id === this.entities[i].getId()) {
-      return this.entities[i];
+Scene.prototype.findComponentById = function(id) {
+  for (var i = 0; i < this.components.length; i++) {
+    if (id === this.components[i].getId()) {
+      return this.components[i];
     }
   }
 }
 
-Scene.prototype.findEntityByType = function(type) {
-  var entities = [];
-  for (var i = 0; i < this.entities.length; i++) {
-    if (this.entities[i] instanceof type) {
-      entities.push(this.entities[i]);
+Scene.prototype.findComponentByType = function(type) {
+  var components = [];
+  for (var i = 0; i < this.components.length; i++) {
+    if (this.components[i] instanceof type) {
+      components.push(this.components[i]);
     }
   }
-  return entities;
+  return components;
 }
-
-Scene.prototype.findEntityByComponentType = function(type) {
-  var entities = [];
-  for (var i = 0; i < this.entities.length; i++) {
-    var components = this.entities[i].findComponentByType(type);
-    if (components.length > 0) {
-      entities.push(this.entities[i]);
-    }
-  }
-  return entities;
-}
-
 module.exports = Scene;

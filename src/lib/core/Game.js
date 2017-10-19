@@ -3,7 +3,7 @@ var FRAME_DURATION = 1000 / FPS;
 var fps = 0;
 var frames = 0;
 var scenes = {};
-var currentScene = null;
+var scene = null;
 var previousTime = null;
 var delta = null;
 var canvas = null;
@@ -11,6 +11,7 @@ var context = null;
 var elapsed = 0;
 
 var Game = {
+  backgroundColor: 'white',
   paused: false,
   getCanvas() {
     return canvas;
@@ -18,29 +19,46 @@ var Game = {
   setCanvas(_canvas) {
     canvas = _canvas;
     context = canvas.getContext('2d');
-    canvas.addEventListener('click', function(event) {
-      var x = event.pageX - canvas.offsetLeft;
-      var y = event.pageY - canvas.offsetTop;
-      currentScene.onClick(x, y, event);
-    }, false);
+    var events = [
+      'click', 'mousemove', 'touchstart',
+      'touchend', 'touchmove', 'touchcancel'
+    ];
+    events.forEach(function(name) {
+      canvas.addEventListener(name, function(event) {
+        if (!scene) {
+          throw new Error('No scene');
+        }
+        event.preventDefault();
+        if (event.changedTouches) {
+          var touches = event.changedTouches;
+          for (var i = 0; i < touches.length; i++) {
+            var x = touches[i].pageX - scene.x;
+            var y = touches[i].pageY - scene.y;
+            scene.emit(name, x, y, event, i);
+          }
+        } else {
+          var x = event.pageX - scene.x;
+          var y = event.pageY - scene.y;
+          scene.emit(name, x, y, event);
+        }
+      }, false);
+    });
+    Game.resizeCanvas();
   },
   getContext() {
     return context;
   },
+  addScenes(_scenes) {
+    scenes = _scenes;
+  },
   addScene(name, scene) {
     scenes[name] = scene;
   },
-  getCurrentScene() {
-    return currentScene;
+  getScene() {
+    return scene;
   },
-  setCurrentScene(name) {
-    currentScene = scenes[name];
-    Game.resetCurrentScene();
-  },
-  resetCurrentScene() {
-    if (currentScene) {
-      currentScene.reset();
-    }
+  setScene(name) {
+    scene = scenes[name];
   },
   getDelta() {
     return delta;
@@ -76,10 +94,24 @@ var Game = {
   },
   run() {
     _gameLoop();
+  },
+  resizeCanvas() {
+    var canvas = document.getElementById('game');
+    if (canvas) {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+      if (scene) {
+        scene.emit('resize', window.innerWidth, window.innerHeight, event);
+      }
+    }
   }
 };
 
 module.exports = Game;
+
+if (window.addEventListener) {
+  window.addEventListener('resize', Game.resizeCanvas, false);
+}
 
 function _gameLoop() {
 
@@ -107,9 +139,13 @@ function _gameLoop() {
   // Restore the transform
   context.restore();
 
+  // Fill the background color
+  context.fillStyle = Game.backgroundColor;
+  context.fillRect(0, 0, canvas.width, canvas.height);
+
   //Update all of the game components
-  if (currentScene) {
-    currentScene.update();
+  if (scene && scene.update) {
+    scene.update(context, scene, Game);
   }
 
   //set the current time to be used as the previous

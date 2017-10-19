@@ -1,0 +1,7 @@
+{
+  "short_name": "JumpJs",
+  "name": "Jumpjs",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "start_url": "."
+}

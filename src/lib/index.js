@@ -1,8 +1,8 @@
 var core = require('./core');
-var entities = require('./entities');
 var graphics = require('./graphics');
 var input = require('./input');
 var components = require('./components');
+var utils = require('./utils');
 
 /**
  * Setup
@@ -32,19 +32,21 @@ if (window) {
   }
 }
 
-var ready = function(canvas, cb) {
-  core.Game.setCanvas(canvas);
-  document.addEventListener('DOMContentLoaded', function () {
+if (document.addEventListener) {
+  document.addEventListener('DOMContentLoaded', function() {
+    var canvas = document.createElement('canvas');
+    canvas.setAttribute('id', 'game');
+    document.body.appendChild(canvas);
+    core.Game.setCanvas(canvas);
+    core.Game.setScene('main');
     core.Game.run();
-    cb();
   }, false);
-};
+}
 
 module.exports = {
   core,
   graphics,
   input,
   components,
-  ready,
-  entities
+  utils
 };

@@ -7,7 +7,7 @@ function BoxCollider2D(x, y, w, h) {
   this.y = y || 0;
   this.width = w || 0;
   this.height = h || 0;
-  this.onUpdate = onUpdate
+  this.onUpdate = onUpdate;
 }
 
 BoxCollider2D.prototype = Object.create(Component.prototype);

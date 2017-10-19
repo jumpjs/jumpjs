@@ -1,4 +1,4 @@
-var Sprite = require('./Sprite');
+var Sprite = require('../components/Sprite');
 
 function SpriteSheet(src, map) {
   this.map = map;
