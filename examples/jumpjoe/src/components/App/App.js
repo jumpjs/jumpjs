@@ -1,17 +1,21 @@
 import React, { Component } from 'react';
-import Game from 'jumpjs/lib/core/Game';
-
+import game from 'game/app';
 class App extends Component {
   componentDidMount() {
-    const game = new Game();
-    game.setCanvas(document.getElementById('jumpjs-canvas'));
-    game.run();
+    const canvas = document.getElementById('jumpjs-canvas');
+    game.start(canvas);
   }
   render() {
     return (
-      <div>
-        This is the App
-        <canvas id="jumpjs-canvas" />
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'black',
+        width: '100%',
+        height: '100%',
+      }}>
+        <canvas id="jumpjs-canvas" width="700" height="500" />
       </div>
     );
   }

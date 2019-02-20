@@ -11,7 +11,6 @@ var Gravity = components.Gravity;
 
 function Player(x, y) {
   var sprite = sprites('joe');
-  Entity.call(this, x, y, sprite.width, sprite.height);
   var self = this;
   self.id = 'player';
   this.addComponent('sprite', sprite);
