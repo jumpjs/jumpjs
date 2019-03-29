@@ -1,11 +1,12 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from 'components/App/App';
-import * as serviceWorker from './serviceWorker';
+import * as Game from 'core/Game';
+import StartScene from 'scenes/Start';
+// import GameScene from 'game/scenes/Game';
 
-ReactDOM.render(<App />, document.getElementById('root'));
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: http://bit.ly/CRA-PWA
-serviceWorker.unregister();
+Game.addScene('start', StartScene);
+// Game.addScene('game', GameScene);
+// Game.setScene('start');
+Game.run({
+  width: 700,
+  height: 500,
+  backgroundColor: 'white',
+});
